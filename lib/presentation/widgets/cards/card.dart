@@ -1,47 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:projet_tuto/cubits/dota_cards_cubit.dart';
+import 'package:projet_tuto/cubits/dota_cards_state.dart';
 import 'package:projet_tuto/domain/entities/dota_card.dart';
 import 'package:projet_tuto/dto/main_attribute.dart';
+import 'package:projet_tuto/presentation/widgets/cards/card_attribute_icon.dart';
+import 'package:projet_tuto/presentation/widgets/cards/card_attribute_label.dart';
+import 'package:projet_tuto/presentation/widgets/cards/card_description.dart';
+import 'package:projet_tuto/presentation/widgets/cards/card_name.dart';
 
-// Grid of every hero card exposed by the DotaCardsCubit.
-class DotaCards extends StatelessWidget {
-  const DotaCards({super.key});
+// One hero card: picture, name, main attribute and description,
+// slightly zoomed while the mouse is over it.
+class DotaCard extends StatelessWidget {
+  const DotaCard({required this.card, super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    // BlocBuilder rebuilds this part of the tree each time the cubit emits.
-    return BlocBuilder<DotaCardsCubit, List<DotaCard>>(
-      builder: (context, cards) {
-        if (cards.isEmpty) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        // GridView.builder only builds the cells visible on screen.
-        return GridView.builder(
-          padding: const EdgeInsets.all(12),
-          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-            maxCrossAxisExtent: 220, // column count adapts to screen width
-            mainAxisSpacing: 12,
-            crossAxisSpacing: 12,
-            childAspectRatio: 0.85,
-          ),
-          itemCount: cards.length,
-          itemBuilder: (context, index) => DotaCardTile(card: cards[index]),
-        );
-      },
-    );
-  }
-}
-
-class DotaCardTile extends StatelessWidget {
-  const DotaCardTile({required this.card, super.key});
-
-  final DotaCard card;
+  final DotaCardDto card;
 
   @override
   Widget build(BuildContext context) {
     final color = _attributeColor(card.mainAttribute);
 
+    // MouseRegion reports the mouse events to the cubit
+    // (read, not watch: we are in a callback).
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => context.read<DotaCardsCubit>().hover(card.id),
+      onExit: (_) => context.read<DotaCardsCubit>().unhover(),
+      // BlocSelector only rebuilds when "is this card hovered?" changes,
+      // so only the two cards involved rebuild when the mouse moves.
+      child: BlocSelector<DotaCardsCubit, DotaCardsState, bool>(
+        selector: (state) => state.hoveredId == card.id,
+        builder: (context, isHovered) => AnimatedScale(
+          scale: isHovered ? 1.07 : 1.0,
+          duration: const Duration(milliseconds: 400),
+          curve: Curves.easeOut,
+          child: _buildCard(color),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCard(Color color) {
     return Card(
       color: const Color(0xFF1B1E24),
       clipBehavior: Clip.antiAlias, // clips the image to the rounded corners
@@ -68,43 +67,23 @@ class DotaCardTile extends StatelessWidget {
               // Centers each Text horizontally inside the column.
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(
-                  card.name,
-                  textAlign: TextAlign.center,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
+                CardName(name: card.name),
                 const SizedBox(height: 4),
                 // mainAxisSize.min: the Row only takes its content's width,
                 // so the parent Column can center it.
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Image.asset(card.mainAttribute.logo, width: 18, height: 18),
+                    CardAttributeIcon(attribute: card.mainAttribute),
                     const SizedBox(width: 6),
-                    Text(
-                      card.mainAttribute.label.toUpperCase(),
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: color, fontWeight: FontWeight.w600),
+                    CardAttributeLabel(
+                      mainAttributeLabel: card.mainAttribute.label,
                     ),
                   ],
                 ),
                 if (card.description != null) ...[
                   const SizedBox(height: 4),
-                  Text(
-                    card.description!,
-                    // Needed on top of the Column alignment: it centers
-                    // each line when the text wraps over two lines.
-                    textAlign: TextAlign.center,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(color: Colors.white70, fontSize: 12),
-                  ),
+                  CardDescription(description: card.description),
                 ],
               ],
             ),

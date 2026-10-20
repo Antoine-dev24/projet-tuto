@@ -1,13 +1,14 @@
 // Domain entity: pure Dart, no Flutter or infrastructure import.
+
 import '../../dto/main_attribute.dart';
 
-class DotaCard {
-  const DotaCard({
+class DotaCardDto {
+  const DotaCardDto({
     required this.id,
     required this.name,
     required this.picture,
     this.description,
-    required this.mainAttribute
+    required this.mainAttribute,
   });
 
   final String id;

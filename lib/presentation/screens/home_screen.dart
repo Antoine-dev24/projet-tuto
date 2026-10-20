@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:projet_tuto/cubits/counter_cubit.dart';
 import 'package:projet_tuto/cubits/dota_cards_cubit.dart';
 
 import '../repositories/in_memory_dota_cards_repository.dart';
 import '../widgets/app_bar.dart';
-import '../widgets/cards.dart';
+import '../widgets/cards/cards.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -17,8 +16,6 @@ class HomeScreen extends StatelessWidget {
     // MultiBlocProvider avoids nesting several BlocProvider.
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => CounterCubit()),
-        // ".." (cascade) calls load() then returns the cubit itself.
         BlocProvider(
           create: (_) => DotaCardsCubit(InMemoryDotaCardsRepository())..load(),
         ),
@@ -36,22 +33,35 @@ class _HomeView extends StatelessWidget {
     // Scaffold provides the basic page structure
     // (and its own Material surface).
     return Scaffold(
-      // Column is a vertical, linear layout.
-      body: Column(
-        children: [
-          DotaTopBar(
-            title: Text(
-              'Godoto lo',
-              style:
-                  Theme.of(context) //
-                      .primaryTextTheme
-                      .titleLarge,
-              textAlign: TextAlign.center,
-            ),
+      // DecoratedBox paints a decoration (here a gradient) behind its child.
+      body: DecoratedBox(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xFF1C2028), // dark slate grey
+              Color(0xFF050607), // almost black
+            ],
           ),
-          // A grid inside a Column must be given a bounded height: Expanded.
-          const Expanded(child: DotaCards()),
-        ],
+        ),
+        // Column is a vertical, linear layout.
+        child: Column(
+          children: [
+            DotaTopBar(
+              title: Text(
+                'Godoto lo',
+                style:
+                    Theme.of(context) //
+                        .primaryTextTheme
+                        .titleLarge,
+                textAlign: TextAlign.center,
+              ),
+            ),
+            // A grid inside a Column must be given a bounded height: Expanded.
+            const Expanded(child: DotaCards()),
+          ],
+        ),
       ),
     );
   }
