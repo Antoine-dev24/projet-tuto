@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class MyAppBar extends StatelessWidget {
-  const MyAppBar({required this.title, super.key});
+class DotaTopBar extends StatelessWidget {
+  const DotaTopBar({required this.title, super.key});
 
   // Fields in a Widget subclass are always marked "final".
 
