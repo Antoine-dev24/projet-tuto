@@ -6,7 +6,7 @@ import '../../domain/repositories/dota_cards_repository.dart';
 // Adapter: a hard-coded implementation of the port.
 // Pictures are local assets (declared in pubspec.yaml), downloaded from
 // Valve's CDN and named after the hero's internal name
-// (e.g. "antimage", "zuus" for Zeus).
+// (e.g. "antimage", "zeus" for Zeus).
 class InMemoryDotaCardsRepository implements DotaCardsRepository {
   static const _heroesDir = 'assets/heroes';
 
@@ -28,7 +28,7 @@ class InMemoryDotaCardsRepository implements DotaCardsRepository {
     // Intelligence
     DotaCardDto(id: 'crystal_maiden', name: 'Crystal Maiden', picture: _picture('crystal_maiden'), mainAttribute: MainAttribute.intelligence, description: 'Freezing Field et aura de mana.'),
     DotaCardDto(id: 'lina', name: 'Lina', picture: _picture('lina'), mainAttribute: MainAttribute.intelligence, description: 'Laguna Blade, pur burst magique.'),
-    DotaCardDto(id: 'zeus', name: 'Zeus', picture: _picture('zuus'), mainAttribute: MainAttribute.intelligence, description: 'Thundergod\'s Wrath sur toute la map.'),
+    DotaCardDto(id: 'zeus', name: 'Zeus', picture: _picture('zeus'), mainAttribute: MainAttribute.intelligence, description: 'Thundergod\'s Wrath sur toute la map.'),
     DotaCardDto(id: 'lion', name: 'Lion', picture: _picture('lion'), mainAttribute: MainAttribute.intelligence, description: 'Hex, stun et Finger of Death.'),
     DotaCardDto(id: 'lich', name: 'Lich', picture: _picture('lich'), mainAttribute: MainAttribute.intelligence, description: 'Chain Frost qui rebondit.'),
     // Universal
