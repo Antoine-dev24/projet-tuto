@@ -9,7 +9,8 @@ import 'package:projet_tuto/presentation/widgets/cards/card_attribute_label.dart
 
 import 'card.dart';
 
-// Hero cards split into 4 side by side columns, one per main attribute.
+// Hero cards grouped by main attribute: 4 side by side columns on wide
+// screens, stacked sections on mobile.
 class DotaCards extends StatelessWidget {
   const DotaCards({super.key});
 
@@ -24,28 +25,49 @@ class DotaCards extends StatelessWidget {
         if (cards.isEmpty) {
           return const Center(child: CircularProgressIndicator());
         }
-        // A single scroll for the whole page: the 4 columns move together.
-        return SingleChildScrollView(
-          padding: const EdgeInsets.all(12),
-          child: Row(
-            // Columns don't have the same number of heroes:
-            // align them on the top instead of centering them.
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // MainAttribute.values follows the declaration order:
-              // strength, agility, intelligence, polyvalence.
+        // LayoutBuilder gives the width actually available to this widget.
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            final isMobile = constraints.maxWidth < 600;
+            // Same 4 sections in both layouts, only their container changes.
+            // MainAttribute.values follows the declaration order:
+            // strength, agility, intelligence, polyvalence.
+            final columns = [
               for (final attribute in MainAttribute.values)
-                // Expanded gives each column a quarter of the width.
-                Expanded(
-                  child: _AttributeColumn(
-                    attribute: attribute,
-                    cards: cards
-                        .where((card) => card.mainAttribute == attribute)
-                        .toList(),
-                  ),
+                _AttributeColumn(
+                  attribute: attribute,
+                  cards: cards
+                      .where((card) => card.mainAttribute == attribute)
+                      .toList(),
+                  compact: isMobile,
                 ),
-            ],
-          ),
+            ];
+
+            // A single scroll for the whole page: the sections move together.
+            return SingleChildScrollView(
+              padding: const EdgeInsets.all(10),
+              child: isMobile
+                  // Mobile: sections stacked, each one takes the full width.
+                  // No Expanded here: the scroll view gives an infinite height.
+                  ? Column(
+                      children: [
+                        for (final column in columns) ...[
+                          column,
+                          const SizedBox(height: 24),
+                        ],
+                      ],
+                    )
+                  : Row(
+                      // Columns don't have the same number of heroes:
+                      // align them on the top instead of centering them.
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Expanded gives each column a quarter of the width.
+                        for (final column in columns) Expanded(child: column),
+                      ],
+                    ),
+            );
+          },
         );
       },
     );
@@ -54,10 +76,16 @@ class DotaCards extends StatelessWidget {
 
 // Header (icon + label) followed by the cards of one attribute.
 class _AttributeColumn extends StatelessWidget {
-  const _AttributeColumn({required this.attribute, required this.cards});
+  const _AttributeColumn({
+    required this.attribute,
+    required this.cards,
+    required this.compact,
+  });
 
   final MainAttribute attribute;
   final List<DotaCardDto> cards;
+  // Passed down to the cards: tighter spacing on mobile.
+  final bool compact;
 
   @override
   Widget build(BuildContext context) {
@@ -85,10 +113,11 @@ class _AttributeColumn extends StatelessWidget {
               maxCrossAxisExtent: 220, // column count adapts to the width
               mainAxisSpacing: 12,
               crossAxisSpacing: 12,
-              childAspectRatio: 0.85,
+              childAspectRatio: 1.05,
             ),
             itemCount: cards.length,
-            itemBuilder: (context, index) => DotaCard(card: cards[index]),
+            itemBuilder: (context, index) =>
+                DotaCard(card: cards[index], compact: compact),
           ),
         ],
       ),

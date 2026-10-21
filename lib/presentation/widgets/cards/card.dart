@@ -4,17 +4,17 @@ import 'package:projet_tuto/cubits/dota_cards_cubit.dart';
 import 'package:projet_tuto/cubits/dota_cards_state.dart';
 import 'package:projet_tuto/domain/entities/dota_card.dart';
 import 'package:projet_tuto/dto/main_attribute.dart';
-import 'package:projet_tuto/presentation/widgets/cards/card_attribute_icon.dart';
-import 'package:projet_tuto/presentation/widgets/cards/card_attribute_label.dart';
 import 'package:projet_tuto/presentation/widgets/cards/card_description.dart';
 import 'package:projet_tuto/presentation/widgets/cards/card_name.dart';
 
 // One hero card: picture, name, main attribute and description,
 // slightly zoomed while the mouse is over it.
 class DotaCard extends StatelessWidget {
-  const DotaCard({required this.card, super.key});
+  const DotaCard({required this.card, this.compact = false, super.key});
 
   final DotaCardDto card;
+  // true on mobile: tighter spacing so the text fits the smaller cells.
+  final bool compact;
 
   @override
   Widget build(BuildContext context) {
@@ -51,41 +51,60 @@ class DotaCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Valve's hero pictures are 256x144, i.e. 16/9.
-          AspectRatio(
-            aspectRatio: 16 / 9,
-            child: Image.asset(
-              card.picture,
-              fit: BoxFit.cover,
-              errorBuilder: (_, _, _) =>
-                  const Icon(Icons.broken_image, color: Colors.white54),
+          // Moves the picture away from the card's border.
+          // No bottom padding: the text below already has its own.
+          Padding(
+            padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+            // Valve's hero pictures are 256x144, i.e. 16/9.
+            child: AspectRatio(
+              aspectRatio: 16 / 9,
+              child: Image.asset(
+                card.picture,
+                fit: BoxFit.cover,
+                errorBuilder: (_, _, _) =>
+                    const Icon(Icons.broken_image, color: Colors.white54),
+              ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8),
-            child: Column(
-              // Centers each Text horizontally inside the column.
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                CardName(name: card.name),
-                const SizedBox(height: 4),
-                // mainAxisSize.min: the Row only takes its content's width,
-                // so the parent Column can center it.
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    CardAttributeIcon(attribute: card.mainAttribute),
-                    const SizedBox(width: 6),
-                    CardAttributeLabel(
-                      mainAttributeLabel: card.mainAttribute.label,
+          // Expanded: the text block takes all the height left under the
+          // picture, so it can be centered in it (a 1 line description
+          // no longer sticks to the top).
+          Expanded(
+            child: Padding(
+              // Compact: smaller vertical padding, leaves room for a 2 lines
+              // description in the smaller mobile grid cells.
+              padding: compact
+                  ? const EdgeInsets.symmetric(horizontal: 8, vertical: 4)
+                  : const EdgeInsets.all(8),
+              child: Column(
+                // Centers the texts vertically in the space left.
+                mainAxisAlignment: MainAxisAlignment.center,
+                // Centers each Text horizontally inside the column.
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CardName(name: card.name),
+                  if (!compact) const SizedBox(height: 4),
+                  // mainAxisSize.min: the Row only takes its content's width,
+                  // so the parent Column can center it.
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // CardAttributeIcon(attribute: card.mainAttribute),
+                      const SizedBox(width: 6),
+                      // CardAttributeLabel(
+                      //   mainAttributeLabel: card.mainAttribute.label,
+                      // ),
+                    ],
+                  ),
+                  if (card.description != null) ...[
+                    const SizedBox(height: 4),
+                    CardDescription(
+                      description: card.description,
+                      compact: compact,
                     ),
                   ],
-                ),
-                if (card.description != null) ...[
-                  const SizedBox(height: 4),
-                  CardDescription(description: card.description),
                 ],
-              ],
+              ),
             ),
           ),
         ],

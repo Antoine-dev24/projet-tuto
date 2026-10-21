@@ -50,7 +50,7 @@ class _HomeView extends StatelessWidget {
           children: [
             DotaTopBar(
               title: Text(
-                'Godoto lo',
+                'Flutter Dota',
                 style:
                     Theme.of(context) //
                         .primaryTextTheme
