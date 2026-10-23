@@ -52,16 +52,7 @@ class _HomeView extends StatelessWidget {
         // Column is a vertical, linear layout.
         child: Column(
           children: [
-            DotaTopBar(
-              title: Text(
-                'Flutter Dota',
-                style:
-                    Theme.of(context) //
-                        .primaryTextTheme
-                        .titleLarge,
-                textAlign: TextAlign.center,
-              ),
-            ),
+            const DotaTopBar(),
             // A grid inside a Column must be given a bounded height: Expanded.
             const Expanded(child: DotaCards()),
           ],
