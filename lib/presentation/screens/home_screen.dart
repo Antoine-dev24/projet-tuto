@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:projet_tuto/cubits/dota_cards_cubit.dart';
+import 'package:projet_tuto/presentation/repositories/firestore_dota_cards_repository.dart';
 
 import '../repositories/in_memory_dota_cards_repository.dart';
 import '../widgets/app_bar.dart';
@@ -18,7 +19,7 @@ class HomeScreen extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (_) => DotaCardsCubit(InMemoryDotaCardsRepository())..load(),
+          create: (_) => DotaCardsCubit(FirestoreDotaCardsRepository())..load(),
         ),
       ],
       child: const _HomeView(),
