@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1081896203874",
+    "project_id": "flutter-dota-bb403",
+    "storage_bucket": "flutter-dota-bb403.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1081896203874:android:82c9c39df6888a65a2433b",
+        "android_client_info": {
+          "package_name": "com.pekcorp.projet_tuto"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBPskMyVFC5ghrY_9oLOzkitzcAcqtCDZE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

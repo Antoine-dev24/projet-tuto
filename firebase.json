@@ -1,0 +1,22 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "flutter-dota-bb403",
+          "appId": "1:1081896203874:android:82c9c39df6888a65a2433b",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "flutter-dota-bb403",
+          "configurations": {
+            "android": "1:1081896203874:android:82c9c39df6888a65a2433b",
+            "web": "1:1081896203874:web:be70ec3460e4d425a2433b"
+          }
+        }
+      }
+    }
+  }
+}

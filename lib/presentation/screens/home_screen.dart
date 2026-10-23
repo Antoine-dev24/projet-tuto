@@ -4,6 +4,7 @@ import 'package:projet_tuto/cubits/dota_cards_cubit.dart';
 
 import '../repositories/in_memory_dota_cards_repository.dart';
 import '../widgets/app_bar.dart';
+import '../widgets/app_drawer.dart';
 import '../widgets/cards/cards.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -33,6 +34,8 @@ class _HomeView extends StatelessWidget {
     // Scaffold provides the basic page structure
     // (and its own Material surface).
     return Scaffold(
+      // The burger menu, opened from DotaTopBar on small screens.
+      drawer: const AppDrawer(),
       // DecoratedBox paints a decoration (here a gradient) behind its child.
       body: DecoratedBox(
         decoration: const BoxDecoration(
